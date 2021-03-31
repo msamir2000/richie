@@ -38,6 +38,13 @@ export const UserFactory = createSpec({
   username: faker.internet.userName(),
 });
 
+export const FonzieUserFactory = compose(
+  UserFactory,
+  createSpec({
+    access_token: btoa(faker.datatype.uuid()),
+  }),
+);
+
 export const ContextFactory = (context: Partial<CommonDataProps['context']> = {}) =>
   createSpec({
     auth_endpoint: 'https://endpoint.test',
