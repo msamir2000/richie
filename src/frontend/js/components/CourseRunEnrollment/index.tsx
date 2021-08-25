@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useReducer } from 'react';
+import { Fragment, useCallback, useEffect, useReducer } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { Spinner } from 'components/Spinner';
@@ -201,7 +201,7 @@ const CourseRunEnrollment: React.FC<CourseRunEnrollmentProps & CommonDataProps> 
     case step === Step.ENROLLING:
     case step === Step.ENROLLMENT_FAILED:
       return (
-        <React.Fragment>
+        <Fragment>
           <button
             onClick={enroll}
             className={`course-run-enrollment__cta ${
@@ -222,7 +222,7 @@ const CourseRunEnrollment: React.FC<CourseRunEnrollmentProps & CommonDataProps> 
               <FormattedMessage {...messages.enrollmentFailed} />
             </div>
           ) : null}
-        </React.Fragment>
+        </Fragment>
       );
     case step === Step.ENROLLED:
       return courseRun.starts_in_message ? (

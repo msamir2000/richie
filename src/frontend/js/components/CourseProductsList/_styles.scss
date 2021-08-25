@@ -175,6 +175,15 @@
           min-width: 50%;
           max-width: 100px;
         }
+
+        li:last-child {
+          margin-top: 1rem;
+
+          .course-run-item__cta {
+            min-width: 50%;
+            max-width: 100px;
+          }
+        }
       }
     }
   }

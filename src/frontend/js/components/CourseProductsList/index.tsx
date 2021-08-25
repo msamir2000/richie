@@ -9,7 +9,7 @@ import EnrolledCourseRun from './EnrolledCourseRun';
 import EnrollableCourseRunList from './EnrollableCourseRunList';
 import PurchasedProductMenu from './PurchasedProductMenu';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   enrolled: {
     defaultMessage: 'Enrolled',
     description: 'Message displayed when authenticated user owned the product',
@@ -31,6 +31,11 @@ const messages = defineMessages({
     description: 'Text displayed when the product certificate has no description',
     id: 'components.CourseProductsList.certificateExplanation',
   },
+  enroll: {
+    defaultMessage: 'Enroll',
+    description: 'Text label for the enroll button',
+    id: 'components.CourseProductsList.enroll',
+  },
   loadingInitial: {
     defaultMessage: 'Loading course information...',
     description:
@@ -45,8 +50,6 @@ interface Props {
 
 const List = () => {
   const course = useCourse();
-  const orders = useOrders();
-  const intl = useIntl();
 
   const getProductOrder = (productId: Joanie.Course['products'][0]['id']) => {
     return course.item?.orders?.find((order) => order.product === productId);
@@ -80,6 +83,7 @@ const List = () => {
       return key;
     }, '');
 
+  // - useCourse hook is fetching data
   if (course.states.fetching) {
     return (
       <Spinner aria-labelledby="loading-course">
@@ -89,6 +93,8 @@ const List = () => {
       </Spinner>
     );
   }
+
+  // - There is no related course from Joanie
   if (!course.item) return null;
 
   return (
