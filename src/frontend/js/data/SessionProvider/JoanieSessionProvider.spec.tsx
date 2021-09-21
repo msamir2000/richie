@@ -1,4 +1,5 @@
 import fetchMock from 'fetch-mock';
+import { IntlProvider } from 'react-intl';
 import { QueryClientProvider } from 'react-query';
 import { act, render, waitFor } from '@testing-library/react';
 import { ContextFactory as mockContextFactory, FonzieUserFactory } from 'utils/test/factories';
@@ -33,9 +34,11 @@ describe('JoanieSessionProvider', () => {
       .get('https://joanie.endpoint.test/api/orders/', []);
 
     render(
-      <QueryClientProvider client={queryClient}>
-        <JoanieSessionProvider />
-      </QueryClientProvider>,
+      <IntlProvider locale="en">
+        <QueryClientProvider client={queryClient}>
+          <JoanieSessionProvider />
+        </QueryClientProvider>
+      </IntlProvider>,
     );
 
     await waitFor(() => {
@@ -57,9 +60,11 @@ describe('JoanieSessionProvider', () => {
       .get('https://joanie.endpoint.test/api/orders/', []);
 
     render(
-      <QueryClientProvider client={queryClient}>
-        <JoanieSessionProvider />
-      </QueryClientProvider>,
+      <IntlProvider locale="en">
+        <QueryClientProvider client={queryClient}>
+          <JoanieSessionProvider />
+        </QueryClientProvider>
+      </IntlProvider>,
     );
 
     await act(async () => deferredUser.resolve(user));
@@ -79,9 +84,11 @@ describe('JoanieSessionProvider', () => {
     fetchMock.get('https://auth.endpoint.test/api/v1.0/user/me', deferredUser.promise);
 
     render(
-      <QueryClientProvider client={queryClient}>
-        <JoanieSessionProvider />
-      </QueryClientProvider>,
+      <IntlProvider locale="en">
+        <QueryClientProvider client={queryClient}>
+          <JoanieSessionProvider />
+        </QueryClientProvider>
+      </IntlProvider>,
     );
 
     await act(async () => deferredUser.resolve(null));

@@ -1,8 +1,9 @@
-import React, { createContext, useContext } from 'react';
-import { useQuery, QueryObserverBaseResult, useQueryClient } from 'react-query';
+import { FC, createContext, useContext, useMemo } from 'react';
+import { QueryObserverBaseResult, useQueryClient, useQuery } from 'react-query';
 import { Maybe } from 'types/utils';
 import { Course } from 'types/Joanie';
 import API from 'utils/api/joanie';
+import { useLocalizedQueryKey } from 'utils/react-query/useLocalizedQueryKey';
 import { useSession } from 'data/SessionProvider';
 import { REACT_QUERY_SETTINGS } from 'settings';
 import { APIResponseError } from 'types/api';
@@ -20,10 +21,10 @@ interface CourseContext {
 
 const Context = createContext<Maybe<CourseContext>>(undefined);
 
-export const CourseProvider: React.FC<{ code: string }> = ({ code, children }) => {
+export const CourseProvider: FC<{ code: string }> = ({ code, children }) => {
   const queryClient = useQueryClient();
   const { user } = useSession();
-  const QUERY_KEY = user ? ['user', 'course', code] : ['course', code];
+  const QUERY_KEY = useLocalizedQueryKey(user ? ['user', 'course', code] : ['course', code]);
   const {
     data: course,
     refetch,
@@ -40,17 +41,22 @@ export const CourseProvider: React.FC<{ code: string }> = ({ code, children }) =
   });
 
   const invalidate = async () => {
-    await queryClient.invalidateQueries(QUERY_KEY);
+    // Invalidate all course's queries no matter the locale
+    const unlocalizedQueryKey = QUERY_KEY.slice(0, -1);
+    await queryClient.invalidateQueries(unlocalizedQueryKey);
   };
 
-  const context = {
-    item: course,
-    methods: {
-      invalidate,
-      refetch,
-    },
-    states: { fetching: isLoading },
-  };
+  const context = useMemo(
+    () => ({
+      item: course,
+      methods: {
+        invalidate,
+        refetch,
+      },
+      states: { fetching: isLoading },
+    }),
+    [course, invalidate, refetch, isLoading],
+  );
 
   return <Context.Provider value={context}>{children}</Context.Provider>;
 };

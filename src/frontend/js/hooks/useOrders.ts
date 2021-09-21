@@ -1,11 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import API from 'utils/api/joanie';
 import { useSession } from 'data/SessionProvider';
+import { useLocalizedQueryKey } from 'utils/react-query/useLocalizedQueryKey';
 import { REACT_QUERY_SETTINGS } from 'settings';
 import { APIResponseError } from 'types/api';
 
 export const useOrders = () => {
-  const QUERY_KEY = ['user', 'orders'];
+  const QUERY_KEY = useLocalizedQueryKey(['user', 'orders']);
   const queryClient = useQueryClient();
   const { user } = useSession();
 
@@ -36,7 +37,9 @@ export const useOrders = () => {
   });
 
   const invalidate = () => {
-    queryClient.invalidateQueries(QUERY_KEY);
+    // Invalidate all order's queries no matter the locale
+    const unlocalizedQueryKey = QUERY_KEY.slice(0, -1);
+    queryClient.invalidateQueries(unlocalizedQueryKey);
   };
 
   return {
