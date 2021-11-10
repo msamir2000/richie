@@ -12,8 +12,12 @@ interface Props {
   order: Joanie.OrderLite;
 }
 
+enum MenuItemKey {
+  DOWNLOAD_INVOICE = 'downloadInvoice',
+}
+
 const messages = defineMessages({
-  downloadInvoice: {
+  [MenuItemKey.DOWNLOAD_INVOICE]: {
     id: 'components.PurchasedProductMenu.downloadInvoice',
     defaultMessage: 'Download invoice',
     description: 'Label for selector item to download invoice',
@@ -28,12 +32,14 @@ const PurchasedProductMenu = ({ order }: Props) => {
       setLoading(true);
       const $target = event.currentTarget;
       const file = await API().payments.invoice.get(order.id);
-      const url = window.URL.createObjectURL(file);
+      // eslint-disable-next-line compat/compat
+      const url = URL.createObjectURL(file);
       $target.href = url;
       $target.download = `invoice-${order.id.split('-')[0]}.pdf`;
 
       const revokeObject = () => {
-        window.URL.revokeObjectURL(url);
+        // eslint-disable-next-line compat/compat
+        URL.revokeObjectURL(url);
         $target.removeAttribute('href');
         $target.removeAttribute('download');
         window.removeEventListener('blur', revokeObject);
@@ -50,7 +56,7 @@ const PurchasedProductMenu = ({ order }: Props) => {
 
   const items = [
     {
-      key: 'downloadInvoice',
+      key: MenuItemKey.DOWNLOAD_INVOICE,
       action: downloadInvoice,
     },
   ];

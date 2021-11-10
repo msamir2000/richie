@@ -152,6 +152,23 @@ export interface Address {
   title: string;
 }
 
+// Payment
+
+export enum PaymentProviders {
+  PAYPLUG = 'payplug',
+}
+
+export interface Payment {
+  order_id: string;
+  payment_id: string;
+  provider: string;
+  url: string;
+}
+
+export interface PaymentOneClick extends Payment {
+  is_paid: boolean;
+}
+
 // - API
 
 interface AddressCreationPayload extends Omit<Address, 'id' | 'is_main'> {
@@ -202,12 +219,28 @@ interface APIUser {
   };
 }
 
+interface PaymentCreationPayload {
+  product_id: Product['id'];
+  course_code: Course['code'];
+  billing_address: Omit<Address, 'id' | 'is_main'>;
+  credit_card_id?: CreditCard['id'];
+}
+
+interface APIPayment {
+  abort: (payment_id: string) => Promise<void>;
+  create: (payload: PaymentCreationPayload) => Promise<Payment | PaymentOneClick>;
+  invoice: {
+    get: (orderId: string) => Promise<File>;
+  };
+}
+
 export interface API {
   user: APIUser;
   courses: {
     get(id: string): Promise<Course>;
   };
   courseRuns: {};
+  payments: APIPayment;
 }
 
 export interface Backend {

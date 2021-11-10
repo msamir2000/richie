@@ -23,6 +23,9 @@ function checkStatus(
     if (response.headers.get('Content-Type') === 'application/json') {
       return response.json();
     }
+    if (response.headers.get('Content-Type') === 'application/pdf') {
+      return response.blob();
+    }
     return response.text();
   }
   if (options.ignoredErrorStatus.includes(response.status)) {
@@ -129,6 +132,13 @@ const API = (): Joanie.API => {
     },
     courseRuns: {
       // TODO Add Joanie course run routes
+    },
+    payments: {
+      abort: configuration.endpoint.concat('/api/payments/abort/'),
+      create: configuration.endpoint.concat('/api/payments/create/'),
+      invoice: {
+        get: configuration.endpoint.concat('/api/payments/invoice/:order_id'),
+      },
     },
   };
 
@@ -279,6 +289,32 @@ const API = (): Joanie.API => {
           .catch(handleError()),
     },
     courseRuns: {},
+    payments: {
+      abort: async (payment_id: string) =>
+        fetchWithJWT(ROUTES.payments.abort, {
+          method: 'POST',
+          headers: getDefaultHeaders(),
+          body: JSON.stringify({ id: payment_id }),
+        })
+          .then(checkStatus)
+          .catch(handleError()),
+      create: async (payload) =>
+        fetchWithJWT(ROUTES.payments.create, {
+          method: 'POST',
+          headers: getDefaultHeaders(),
+          body: JSON.stringify(payload),
+        })
+          .then(checkStatus)
+          .catch(handleError()),
+      invoice: {
+        get: async (orderId: string) =>
+          fetchWithJWT(ROUTES.payments.invoice.get.replace(':order_id', orderId), {
+            headers: getDefaultHeaders(),
+          })
+            .then(checkStatus)
+            .catch(handleError()),
+      },
+    },
   };
 };
 

@@ -5,20 +5,12 @@ import { Maybe } from 'types/utils';
 import * as Joanie from 'types/Joanie';
 import { useAddresses } from 'hooks/useAddresses';
 import { useCreditCards } from 'hooks/useCreditCards';
-import { useOrders } from 'hooks/useOrders';
-import { handle } from 'utils/errors/handle';
-import { Spinner } from 'components/Spinner';
 import { RegisteredCreditCard } from 'components/RegisteredCreditCard';
-import { useCourse } from 'data/CourseProductsProvider';
+import PaymentButton from 'components/PaymentButton';
 import AddressesManagement, { LOCAL_BILLING_ADDRESS_ID } from '../AddressesManagement';
 import { SelectField } from '../Form';
 
 const messages = defineMessages({
-  pay: {
-    defaultMessage: 'Pay {price}',
-    description: 'CTA label to proceed of the product',
-    id: 'components.SaleTunnelStepPayment.pay',
-  },
   resumeTile: {
     defaultMessage: 'You are about to purchase',
     description: 'Label for the resume tile',
@@ -79,11 +71,10 @@ export const SaleTunnelStepPayment = ({ product, next }: SaleTunnelStepPaymentPr
   };
 
   const intl = useIntl();
-  const course = useCourse();
   const { user } = useSession();
   const addresses = useAddresses();
   const creditCards = useCreditCards();
-  const orders = useOrders();
+
   const [showAddressCreationForm, setShowAddressCreationForm] = useState(false);
 
   const [creditCard, setCreditCard] = useState<Maybe<string>>(
@@ -272,27 +263,12 @@ export const SaleTunnelStepPayment = ({ product, next }: SaleTunnelStepPaymentPr
         </section>
       ) : null}
       <footer className="SaleTunnelStepPayment__footer">
-        <button
-          className="button button--primary"
-          disabled={orders.states.creating}
-          onClick={processOrder}
-        >
-          {orders.states.creating ? (
-            <Spinner />
-          ) : (
-            <React.Fragment>
-              <FormattedMessage
-                {...messages.pay}
-                values={{
-                  price: intl.formatNumber(product.price, {
-                    style: 'currency',
-                    currency: product.currency.code,
-                  }),
-                }}
-              />
-            </React.Fragment>
-          )}
-        </button>
+        <PaymentButton
+          product={product}
+          creditCard={creditCard}
+          billingAddress={selectedAddress}
+          onSuccess={next}
+        />
       </footer>
     </section>
   );
