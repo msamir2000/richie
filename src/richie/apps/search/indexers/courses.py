@@ -1,6 +1,8 @@
 """
 ElasticSearch course document management utilities
 """
+# pylint: disable=consider-using-f-string
+
 from collections import defaultdict
 from datetime import datetime
 from functools import reduce
@@ -377,7 +379,7 @@ class CoursesIndexer:
                 }}
                 // The course has no course runs
                 return 0;
-                """.format(  # pylint: disable=consider-using-f-string
+                """.format(
                     **{
                         f"weight_{i:d}": weight
                         for i, weight in enumerate(ES_STATE_WEIGHTS)

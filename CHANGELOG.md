@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Upgrade to Python 3.10,
 - Improve semantic of glimpses
 
 ### Fixed
