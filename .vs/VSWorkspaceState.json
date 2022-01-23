@@ -2,10 +2,16 @@
   "ExpandedNodes": [
     "",
     "\\src",
-    "\\src\\richie\\static",
+    "\\src\\richie",
+    "\\src\\richie\\apps",
+    "\\src\\richie\\apps\\core",
+    "\\src\\richie\\apps\\core\\static\\richie\\images",
+    "\\src\\richie\\apps\\core\\templates",
+    "\\src\\richie\\apps\\core\\templates\\richie",
+    "\\src\\richie\\apps\\core\\templates\\social-networks",
     "\\website",
     "\\website\\static"
   ],
-  "SelectedNode": "\\website\\static\\img",
+  "SelectedNode": "\\src\\richie\\apps\\core\\templates\\social-networks\\footer-badges.html",
   "PreviewInSolutionExplorer": false
 }
